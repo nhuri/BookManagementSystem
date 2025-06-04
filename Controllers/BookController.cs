@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BookManagement.API.Models; // ודא שהנתיב למודל שלך נכון
+using BookManagement.API.Models; // או נתיב אחר של Book ו־BookContext
 
 namespace BookManagement.API.Controllers
 {
@@ -17,15 +17,19 @@ namespace BookManagement.API.Controllers
 
         // GET: /api/books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var books = await _context.Books.ToListAsync();
+            var books = await _context.Books
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
             return Ok(books);
         }
 
         // GET: /api/books/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBookById(int id)
+        public async Task<ActionResult<Book>> GetBook(int id)
         {
             var book = await _context.Books.FindAsync(id);
             if (book == null)
@@ -44,7 +48,7 @@ namespace BookManagement.API.Controllers
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetBookById), new { id = book.Id }, book);
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
         }
 
         // PUT: /api/books/{id}
@@ -52,7 +56,7 @@ namespace BookManagement.API.Controllers
         public async Task<IActionResult> UpdateBook(int id, Book updatedBook)
         {
             if (id != updatedBook.Id)
-                return BadRequest("Book ID mismatch");
+                return BadRequest("ID mismatch");
 
             if (!await _context.Books.AnyAsync(b => b.Id == id))
                 return NotFound();
@@ -75,6 +79,20 @@ namespace BookManagement.API.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: /api/books/search?query=...
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Book>>> SearchBooks([FromQuery] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return BadRequest("Query parameter is required");
+
+            var books = await _context.Books
+                .Where(b => b.Title.Contains(query) || b.Author.Contains(query))
+                .ToListAsync();
+
+            return Ok(books);
         }
     }
 }
