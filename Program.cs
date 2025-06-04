@@ -1,4 +1,5 @@
 using BookManagement.API.Models;
+using BookManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<BookContext>();
+    context.Database.EnsureCreated(); // יוצרת את מסד הנתונים אם לא קיים
+    SeedData.Initialize(context);     // מוסיפה את הספרים
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
