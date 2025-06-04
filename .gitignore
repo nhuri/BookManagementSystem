@@ -1,0 +1,28 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code settings
+.vscode/
+
+# Rider settings
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# ASP.NET Core
+appsettings.*.json
+secrets.json
+
+# EF Core SQLite DB (אם נוצר מקומית)
+*.db
+*.db-journa*
