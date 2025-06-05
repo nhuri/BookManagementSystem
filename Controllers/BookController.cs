@@ -40,7 +40,7 @@ public class BookController : ControllerBase
     {
         var book = await _bookService.GetByIdAsync(id);
         if (book == null)
-            return NotFound();
+            return NotFound(new { message = $"Book with ID {id} was not found." });
 
         return Ok(book);
     }
