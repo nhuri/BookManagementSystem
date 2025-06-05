@@ -50,9 +50,16 @@ public class BookService : IBookService
         };
     }
 
-    // יוצר ספר חדש ומחזיר אותו לאחר שנשמר במסד הנתונים
+    // יוצר ספר חדש ומחזיר אותו לאחר שנשמר במסד הנתונים - במידה והספר לא קיים
     public async Task<BookDto> CreateAsync(CreateBookDto dto)
     {
+         var exists = await _context.Books.AnyAsync(b =>
+        b.Title.ToLower() == dto.Title.ToLower() &&
+        b.Author.ToLower() == dto.Author.ToLower());
+
+    if (exists)
+        throw new Exception("A book with the same title and author already exists.");
+
         var book = new Book
         {
             Title = dto.Title,
@@ -106,10 +113,10 @@ public class BookService : IBookService
         var query = _context.Books.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(title))
-            query = query.Where(b => b.Title.Contains(title));
+            query = query.Where(b => b.Title.ToLower().Contains(title.ToLower()));
 
         if (!string.IsNullOrWhiteSpace(author))
-            query = query.Where(b => b.Author.Contains(author));
+            query = query.Where(b => b.Author.ToLower().Contains(author.ToLower()));
 
         return await query
             .Select(book => new BookDto
