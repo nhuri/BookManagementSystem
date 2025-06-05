@@ -37,6 +37,10 @@ using (var scope = app.Services.CreateScope())
     SeedData.Initialize(context);
 }
 
+// הוספת middleware לטיפול בשגיאות
+app.UseMiddleware<BookManagementSystem.Middlewares.ExceptionHandlingMiddleware>();
+
+
 // הפעלת Swagger תמיד 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -37,6 +37,7 @@ public class BookService : IBookService
     // מחזיר ספר לפי מזהה (אם קיים)
     public async Task<BookDto?> GetByIdAsync(int id)
     {
+        //throw new Exception("This is a test exception from controller");
         var book = await _context.Books.FindAsync(id);
         if (book == null) return null;
 
