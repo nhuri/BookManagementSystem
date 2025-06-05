@@ -6,40 +6,46 @@ using BookManagementSystem.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// מוסיף תמיכה ב־Controllers לפרויקט (API endpoints)
 builder.Services.AddControllers();
 
-//Add services by interface
+// רישום השירות BookService לממשק IBookService (תבנית Dependency Injection)
 builder.Services.AddScoped<IBookService, BookService>();
 
-// Register EF Core with SQLite
+// רישום DbContext והגדרת SQLite כמסד הנתונים
 builder.Services.AddDbContext<BookContext>(options =>
-    options.UseSqlite("Data Source=books.db")); // תוכל להחליף ל-SQL Server אם צריך
+    options.UseSqlite("Data Source=books.db")); // ניתן להחליף ל-SQL Server אם נדרש
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// הוספת תמיכה ב־Swagger (תיעוד API)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//  קביעת הפורט ל־80 לטובת הדוקר (HTTP)
 builder.WebHost.UseUrls("http://*:80");
+
 var app = builder.Build();
+
+// יצירת scope כדי להפעיל פעולות אתחול (כמו יצירת מסד נתונים וזריעת נתונים)
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<BookContext>();
-    //context.Database.EnsureCreated(); // יוצרת את מסד הנתונים אם לא קיים
+
+    // מבצע מיגרציה למסד הנתונים (יוצר את הסכימה לפי EF Core)
     context.Database.Migrate();
-    SeedData.Initialize(context);     // מוסיפה את הספרים
+
+    // מזין את מסד הנתונים עם ספרים ראשוניים אם ריק
+    SeedData.Initialize(context);
 }
 
-// Configure the HTTP request pipeline.
+// הפעלת Swagger תמיד 
+app.UseSwagger();
+app.UseSwaggerUI();
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
-
+// הפנייה ל־HTTPS
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
+// מיפוי הנתיבים לכל ה־Controllers
 app.MapControllers();
 
+// הפעלת האפליקציה
 app.Run();

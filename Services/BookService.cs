@@ -1,20 +1,23 @@
 using BookManagementSystem.Interfaces;
 using BookManagementSystem.DTOs;
 using BookManagementSystem.Data;
-using BookManagement.API.Models; // אם Book נמצא כאן
+using BookManagement.API.Models; 
 using Microsoft.EntityFrameworkCore;
 
 namespace BookManagementSystem.Services;
 
+// שירות המממש את הלוגיקה העסקית לניהול ספרים
 public class BookService : IBookService
 {
     private readonly BookContext _context;
 
+    // בונה את השירות ומקבל הקשר למסד הנתונים
     public BookService(BookContext context)
     {
         _context = context;
     }
 
+    // מחזיר את כל הספרים עם תמיכה בפגינציה
     public async Task<IEnumerable<BookDto>> GetAllAsync(int page, int pageSize)
     {
         return await _context.Books
@@ -31,6 +34,7 @@ public class BookService : IBookService
             .ToListAsync();
     }
 
+    // מחזיר ספר לפי מזהה (אם קיים)
     public async Task<BookDto?> GetByIdAsync(int id)
     {
         var book = await _context.Books.FindAsync(id);
@@ -46,6 +50,7 @@ public class BookService : IBookService
         };
     }
 
+    // יוצר ספר חדש ומחזיר אותו לאחר שנשמר במסד הנתונים
     public async Task<BookDto> CreateAsync(CreateBookDto dto)
     {
         var book = new Book
@@ -69,6 +74,7 @@ public class BookService : IBookService
         };
     }
 
+    // מעדכן ספר קיים לפי מזהה ומחזיר true אם הצליח
     public async Task<bool> UpdateAsync(int id, UpdateBookDto dto)
     {
         var book = await _context.Books.FindAsync(id);
@@ -83,6 +89,7 @@ public class BookService : IBookService
         return true;
     }
 
+    // מוחק ספר לפי מזהה ומחזיר true אם נמצא ונמחק
     public async Task<bool> DeleteAsync(int id)
     {
         var book = await _context.Books.FindAsync(id);
@@ -93,6 +100,7 @@ public class BookService : IBookService
         return true;
     }
 
+    // מחפש ספרים לפי כותרת ו/או מחבר
     public async Task<IEnumerable<BookDto>> SearchAsync(string? title, string? author)
     {
         var query = _context.Books.AsQueryable();

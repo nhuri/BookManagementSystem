@@ -3,13 +3,18 @@ using BookManagement.API.Models;
 
 namespace BookManagementSystem.Data
 {
+    /// מחלקה סטטית לאתחול נתוני ברירת מחדל למסד הנתונים.
     public static class SeedData
     {
+        /// מאתחלת את מסד הנתונים עם ספרים לדוגמה אם הוא ריק.
+        /// <param name="context">ההקשר למסד הנתונים (BookContext).</param>
         public static void Initialize(BookContext context)
         {
+            // אם קיימים ספרים במסד הנתונים, אין צורך לזרוע מחדש.
             if (context.Books.Any())
-                return; // כבר קיימים ספרים
+                return;
 
+            //  רשימת ספרים לדוגמה שתתווסף למסד הנתונים אם הוא ריק
             var books = new List<Book>
             {
                 new Book { Title = "Clean Code", Author = "Robert C. Martin", PublicationDate = new DateTime(2008, 8, 1), Price = 180 },
@@ -29,6 +34,7 @@ namespace BookManagementSystem.Data
                 new Book { Title = "Patterns of Enterprise Apps", Author = "Martin Fowler", PublicationDate = new DateTime(2002, 11, 15), Price = 220 }
             };
 
+            // הוספת הספרים למסד הנתונים ושמירתם
             context.Books.AddRange(books);
             context.SaveChanges();
         }
