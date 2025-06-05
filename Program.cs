@@ -1,11 +1,16 @@
 using BookManagement.API.Models;
 using BookManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
+using BookManagementSystem.Services;
+using BookManagementSystem.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+//Add services by interface
+builder.Services.AddScoped<IBookService, BookService>();
 
 // Register EF Core with SQLite
 builder.Services.AddDbContext<BookContext>(options =>

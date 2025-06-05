@@ -1,98 +1,80 @@
+using BookManagementSystem.DTOs;
+using BookManagementSystem.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BookManagement.API.Models; // או נתיב אחר של Book ו־BookContext
 
-namespace BookManagement.API.Controllers
+namespace BookManagementSystem.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class BookController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BooksController : ControllerBase
+    private readonly IBookService _bookService;
+
+    public BookController(IBookService bookService)
     {
-        private readonly BookContext _context;
+        _bookService = bookService;
+    }
 
-        public BooksController(BookContext context)
-        {
-            _context = context;
-        }
+    // GET: api/books?page=1&pageSize=10
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        var books = await _bookService.GetAllAsync(page, pageSize);
+        return Ok(books);
+    }
 
-        // GET: /api/books
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
-        {
-            var books = await _context.Books
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+    // GET: api/books/{id}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var book = await _bookService.GetByIdAsync(id);
+        if (book == null)
+            return NotFound();
 
-            return Ok(books);
-        }
+        return Ok(book);
+    }
 
-        // GET: /api/books/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
-        {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-                return NotFound();
+    // POST: api/books
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateBookDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-            return Ok(book);
-        }
+        var createdBook = await _bookService.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = createdBook.Id }, createdBook);
+    }
 
-        // POST: /api/books
-        [HttpPost]
-        public async Task<ActionResult<Book>> CreateBook(Book book)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+    // PUT: api/books/{id}
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateBookDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+        var updated = await _bookService.UpdateAsync(id, dto);
+        if (!updated)
+            return NotFound();
 
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
-        }
+        return NoContent();
+    }
 
-        // PUT: /api/books/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, Book updatedBook)
-        {
-            if (id != updatedBook.Id)
-                return BadRequest("ID mismatch");
+    // DELETE: api/books/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await _bookService.DeleteAsync(id);
+        if (!deleted)
+            return NotFound();
 
-            if (!await _context.Books.AnyAsync(b => b.Id == id))
-                return NotFound();
+        return NoContent();
+    }
 
-            _context.Entry(updatedBook).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // DELETE: /api/books/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBook(int id)
-        {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-                return NotFound();
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // GET: /api/books/search?query=...
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Book>>> SearchBooks([FromQuery] string query)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-                return BadRequest("Query parameter is required");
-
-            var books = await _context.Books
-                .Where(b => b.Title.Contains(query) || b.Author.Contains(query))
-                .ToListAsync();
-
-            return Ok(books);
-        }
+    // GET: api/books/search?title=some&author=some
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] string? title, [FromQuery] string? author)
+    {
+        var results = await _bookService.SearchAsync(title, author);
+        return Ok(results);
     }
 }
