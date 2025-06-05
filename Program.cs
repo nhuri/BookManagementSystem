@@ -20,7 +20,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<BookContext>();
-    context.Database.EnsureCreated(); // יוצרת את מסד הנתונים אם לא קיים
+    //context.Database.EnsureCreated(); // יוצרת את מסד הנתונים אם לא קיים
+    context.Database.Migrate();
     SeedData.Initialize(context);     // מוסיפה את הספרים
 }
 
