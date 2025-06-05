@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  bookmanagement:
+    image: bookmanagementsystem
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/app # סנכרון התיקייה המקומית עם /app בקונטיינר
+    command: dotnet watch run --urls=http://+:80 # הרצת dotnet עם watch לטעינה מחדש אוטומטית
