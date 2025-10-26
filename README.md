@@ -139,7 +139,3 @@ The project follows a clean and modular structure, implementing several key desi
 
 Developed by Netanel as part of a Junior .NET Developer assessment.
 
-תיאור הפרוייקט בעברית:
-
-- אני מוסיף גם תיאור של מבנה הפרוייקט והשתלשלות האפליקציה בעברית כדי שיהיה יותר קריא ומובן לחלק מהקוראים בעתיד.
-  הפרוייקט מחולק למספר תיקיות עיקריות: 1. תיקיית דאטה שמכילה קובץ להזרעת נתונים ראשוניים למסד הנתונים ואחראית
