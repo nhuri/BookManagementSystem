@@ -1,3 +1,4 @@
+```csharp
 using BookManagementSystem.DTOs;
 using BookManagementSystem.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,11 @@ public class BookController : ControllerBase
     }
 
 /// <summary>
-/// מחזיר רשימת ספרים עם תמיכה בפגינציה.
+/// Returns a list of books with pagination support.
 /// </summary>
-/// <param name="page">מספר עמוד לתצוגה (ברירת מחדל 1).</param>
-/// <param name="pageSize">מספר ספרים בכל עמוד (ברירת מחדל 10).</param>
-/// <returns>רשימת ספרים בעמוד המבוקש.</returns>
+/// <param name="page">Page number to display (default 1).</param>
+/// <param name="pageSize">Number of books per page (default 10).</param>
+/// <returns>List of books for the requested page.</returns>
     // GET: api/books?page=1&pageSize=10
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -30,10 +31,10 @@ public class BookController : ControllerBase
     }
 
 /// <summary>
-/// מחפש ספר לפי מזהה.
+/// Finds a book by its ID.
 /// </summary>
-/// <param name="id">מזהה הספר.</param>
-/// <returns>פרטי הספר אם נמצא, אחרת 404 Not Found.</returns>
+/// <param name="id">The book ID.</param>
+/// <returns>The book details if found, otherwise 404 Not Found.</returns>
     // GET: api/books/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -46,10 +47,10 @@ public class BookController : ControllerBase
     }
 
 /// <summary>
-    /// יוצר ספר חדש.
+    /// Creates a new book.
     /// </summary>
-    /// <param name="dto">פרטי הספר ליצירה.</param>
-    /// <returns>הספר שנוצר עם מזהה ייחודי.</returns>
+    /// <param name="dto">Book details for creation.</param>
+    /// <returns>The created book with a unique ID.</returns>
     // POST: api/books
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateBookDto dto)
@@ -62,11 +63,11 @@ public class BookController : ControllerBase
     }
 
 /// <summary>
-    /// מעדכן ספר קיים לפי מזהה.
+    /// Updates an existing book by ID.
     /// </summary>
-    /// <param name="id">מזהה הספר לעדכון.</param>
-    /// <param name="dto">פרטי העדכון.</param>
-    /// <returns>204 No Content אם הצליח, 404 אם לא נמצא הספר.</returns>
+    /// <param name="id">The book ID to update.</param>
+    /// <param name="dto">Update details.</param>
+    /// <returns>204 No Content if successful, 404 if the book was not found.</returns>
     // PUT: api/books/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateBookDto dto)
@@ -82,10 +83,10 @@ public class BookController : ControllerBase
     }
 
 /// <summary>
-    /// מוחק ספר לפי מזהה.
+    /// Deletes a book by ID.
     /// </summary>
-    /// <param name="id">מזהה הספר למחיקה.</param>
-    /// <returns>204 No Content אם הצליח, 404 אם לא נמצא.</returns>
+    /// <param name="id">The book ID to delete.</param>
+    /// <returns>204 No Content if successful, 404 if not found.</returns>
     // DELETE: api/books/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
@@ -98,11 +99,11 @@ public class BookController : ControllerBase
     }
 
 /// <summary>
-    /// מחפש ספרים לפי שם וכותב.
+    /// Searches for books by title and author.
     /// </summary>
-    /// <param name="title">שם הספר (אופציונלי).</param>
-    /// <param name="author">שם המחבר (אופציונלי).</param>
-    /// <returns>רשימת ספרים התואמים לקריטריונים.</returns>
+    /// <param name="title">Book title (optional).</param>
+    /// <param name="author">Author name (optional).</param>
+    /// <returns>List of books matching the criteria.</returns>
     // GET: api/books/search?title=some&author=some
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string? title, [FromQuery] string? author)
@@ -111,3 +112,4 @@ public class BookController : ControllerBase
         return Ok(results);
     }
 }
+```
