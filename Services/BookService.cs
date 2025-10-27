@@ -6,18 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookManagementSystem.Services;
 
-// שירות המממש את הלוגיקה העסקית לניהול ספרים
+// Service implementing the business logic for managing books
 public class BookService : IBookService
 {
     private readonly BookContext _context;
 
-    // בונה את השירות ומקבל הקשר למסד הנתונים
+    // Constructs the service and receives the database context
     public BookService(BookContext context)
     {
         _context = context;
     }
 
-    // מחזיר את כל הספרים עם תמיכה בפגינציה
+    // Returns all books with pagination support
     public async Task<IEnumerable<BookDto>> GetAllAsync(int page, int pageSize)
     {
         return await _context.Books
@@ -34,7 +34,7 @@ public class BookService : IBookService
             .ToListAsync();
     }
 
-    // מחזיר ספר לפי מזהה (אם קיים)
+    // Returns a book by ID (if exists)
     public async Task<BookDto?> GetByIdAsync(int id)
     {
         //throw new Exception("This is a test exception from controller");
@@ -51,15 +51,15 @@ public class BookService : IBookService
         };
     }
 
-    // יוצר ספר חדש ומחזיר אותו לאחר שנשמר במסד הנתונים - במידה והספר לא קיים
+    // Creates a new book and returns it after saving to the database - if it does not exist
     public async Task<BookDto> CreateAsync(CreateBookDto dto)
     {
-         var exists = await _context.Books.AnyAsync(b =>
-        b.Title.ToLower() == dto.Title.ToLower() &&
-        b.Author.ToLower() == dto.Author.ToLower());
+        var exists = await _context.Books.AnyAsync(b =>
+            b.Title.ToLower() == dto.Title.ToLower() &&
+            b.Author.ToLower() == dto.Author.ToLower());
 
-    if (exists)
-        throw new Exception("A book with the same title and author already exists.");
+        if (exists)
+            throw new Exception("A book with the same title and author already exists.");
 
         var book = new Book
         {
@@ -82,7 +82,7 @@ public class BookService : IBookService
         };
     }
 
-    // מעדכן ספר קיים לפי מזהה ומחזיר true אם הצליח
+    // Updates an existing book by ID and returns true if successful
     public async Task<bool> UpdateAsync(int id, UpdateBookDto dto)
     {
         var book = await _context.Books.FindAsync(id);
@@ -97,7 +97,7 @@ public class BookService : IBookService
         return true;
     }
 
-    // מוחק ספר לפי מזהה ומחזיר true אם נמצא ונמחק
+    // Deletes a book by ID and returns true if found and deleted
     public async Task<bool> DeleteAsync(int id)
     {
         var book = await _context.Books.FindAsync(id);
@@ -108,7 +108,7 @@ public class BookService : IBookService
         return true;
     }
 
-    // מחפש ספרים לפי כותרת ו/או מחבר
+    // Searches for books by title and/or author
     public async Task<IEnumerable<BookDto>> SearchAsync(string? title, string? author)
     {
         var query = _context.Books.AsQueryable();
