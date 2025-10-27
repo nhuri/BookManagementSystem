@@ -18,7 +18,7 @@ namespace BookManagementSystem.Middlewares
         {
             try
             {
-                await _next(context); // המשך לבקשה הבאה בצינור
+                await _next(context); // Continue with the next request in the queue
             }
             catch (Exception ex)
             {
