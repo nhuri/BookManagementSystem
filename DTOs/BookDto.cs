@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BookManagementSystem.DTOs
 {
-    // ייצוג של ספר להעברה בין שכבות (Data Transfer Object) עם ולידציית נתונים.
+  // Representation of a book for data transfer between layers (Data Transfer Object) with data validation.
+
     public class BookDto
     {
-        // מזהה ייחודי של הספר
+        // Unique identifier of the book
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
