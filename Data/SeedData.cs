@@ -3,18 +3,22 @@ using BookManagement.API.Models;
 
 namespace BookManagementSystem.Data
 {
-    /// מחלקה סטטית לאתחול נתוני ברירת מחדל למסד הנתונים.
+    /// <summary>
+    /// Static class for initializing default data in the database.
+    /// </summary>
     public static class SeedData
     {
-        /// מאתחלת את מסד הנתונים עם ספרים לדוגמה אם הוא ריק.
-        /// <param name="context">ההקשר למסד הנתונים (BookContext).</param>
+        /// <summary>
+        /// Initializes the database with sample books if it is empty.
+        /// </summary>
+        /// <param name="context">The database context (BookContext).</param>
         public static void Initialize(BookContext context)
         {
-            // אם קיימים ספרים במסד הנתונים, אין צורך לזרוע מחדש.
+            // If there are already books in the database, no need to seed again.
             if (context.Books.Any())
                 return;
 
-            //  רשימת ספרים לדוגמה שתתווסף למסד הנתונים אם הוא ריק
+            // List of sample books to be added to the database if it is empty
             var books = new List<Book>
             {
                 new Book { Title = "Clean Code", Author = "Robert C. Martin", PublicationDate = new DateTime(2008, 8, 1), Price = 180 },
@@ -34,7 +38,7 @@ namespace BookManagementSystem.Data
                 new Book { Title = "Patterns of Enterprise Apps", Author = "Martin Fowler", PublicationDate = new DateTime(2002, 11, 15), Price = 220 }
             };
 
-            // הוספת הספרים למסד הנתונים ושמירתם
+            // Add the books to the database and save changes
             context.Books.AddRange(books);
             context.SaveChanges();
         }
