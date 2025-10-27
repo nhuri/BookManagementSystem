@@ -3,19 +3,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookManagementSystem.Data
 {
-    /// DbContext עבור מערכת ניהול הספרים.
-    /// אחראי על התקשורת עם מסד הנתונים.
+    /// <summary>
+    /// DbContext for the book management system.
+    /// Responsible for communication with the database.
+    /// </summary>
     public class BookContext : DbContext
     {
-        /// אתחול הקשר למסד הנתונים עם אפשרויות מוגדרות.
-        /// <param name="options">אפשרויות קונפיגורציה ל-DbContext.</param>
+        /// <summary>
+        /// Initializes the database context with defined options.
+        /// </summary>
+        /// <param name="options">Configuration options for the DbContext.</param>
         public BookContext(DbContextOptions<BookContext> options)
             : base(options)
         {
         }
 
-        /// קבוצת ה - Books במסד הנתונים 
-        /// מייצגת את הטבלה של הספרים.
+        /// <summary>
+        /// The Books set in the database.
+        /// Represents the table of books.
+        /// </summary>
         public DbSet<Book> Books { get; set; } = null!;
     }
 }
