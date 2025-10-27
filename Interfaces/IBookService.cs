@@ -2,40 +2,54 @@ using BookManagementSystem.DTOs;
 
 namespace BookManagementSystem.Interfaces;
 
-/// ממשק לשירות ספרים.
-/// מגדיר את הפעולות האפשריות על ספרים במערכת.
+/// <summary>
+/// Interface for the book service.
+/// Defines the available operations for books in the system.
+/// </summary>
 public interface IBookService
 {
-    /// מחזיר רשימת ספרים עם תמיכה בפגינציה.
-    /// <param name="page">מספר העמוד (מתחיל מ־1).</param>
-    /// <param name="pageSize">מספר הספרים בכל עמוד.</param>
-    /// <returns>רשימת ספרים בהתאם לפרמטרים.</returns>
+    /// <summary>
+    /// Returns a list of books with pagination support.
+    /// </summary>
+    /// <param name="page">Page number (starting from 1).</param>
+    /// <param name="pageSize">Number of books per page.</param>
+    /// <returns>List of books according to the parameters.</returns>
     Task<IEnumerable<BookDto>> GetAllAsync(int page, int pageSize);
 
-    /// מחזיר ספר לפי מזהה.
-    /// <param name="id">מזהה הספר.</param>
-    /// <returns>הספר המבוקש אם נמצא, אחרת null.</returns>
+    /// <summary>
+    /// Returns a book by its ID.
+    /// </summary>
+    /// <param name="id">Book ID.</param>
+    /// <returns>The requested book if found, otherwise null.</returns>
     Task<BookDto?> GetByIdAsync(int id);
 
-    /// יוצר ספר חדש.
-    /// <param name="dto">אובייקט עם פרטי הספר ליצירה.</param>
-    /// <returns>הספר שנוצר כולל מזהה.</returns>
+    /// <summary>
+    /// Creates a new book.
+    /// </summary>
+    /// <param name="dto">Object containing the book details for creation.</param>
+    /// <returns>The created book including its ID.</returns>
     Task<BookDto> CreateAsync(CreateBookDto dto);
 
-    /// מעדכן ספר קיים לפי מזהה.
-    /// <param name="id">מזהה הספר לעדכון.</param>
-    /// <param name="dto">פרטי העדכון.</param>
-    /// <returns>True אם העדכון הצליח, אחרת false.</returns>
+    /// <summary>
+    /// Updates an existing book by ID.
+    /// </summary>
+    /// <param name="id">Book ID to update.</param>
+    /// <param name="dto">Update details.</param>
+    /// <returns>True if the update succeeded, otherwise false.</returns>
     Task<bool> UpdateAsync(int id, UpdateBookDto dto);
 
-    /// מוחק ספר לפי מזהה.
-    /// <param name="id">מזהה הספר למחיקה.</param>
-    /// <returns>True אם המחיקה הצליחה, אחרת false.</returns>
+    /// <summary>
+    /// Deletes a book by ID.
+    /// </summary>
+    /// <param name="id">Book ID to delete.</param>
+    /// <returns>True if the deletion succeeded, otherwise false.</returns>
     Task<bool> DeleteAsync(int id);
 
-    /// מחפש ספרים לפי כותרת ו/או מחבר.
-    /// <param name="title">כותרת לחיפוש (לא חובה).</param>
-    /// <param name="author">שם מחבר לחיפוש (לא חובה).</param>
-    /// <returns>רשימת ספרים שתואמים לקריטריונים.</returns>
+    /// <summary>
+    /// Searches for books by title and/or author.
+    /// </summary>
+    /// <param name="title">Title to search for (optional).</param>
+    /// <param name="author">Author name to search for (optional).</param>
+    /// <returns>List of books matching the criteria.</returns>
     Task<IEnumerable<BookDto>> SearchAsync(string? title, string? author);
 }
